@@ -232,8 +232,8 @@ public class SignalPlotter extends WindowAdapter {
 
         JScrollPane scrollPane = new JScrollPane();
         tabbedPane.addTab("Charts", null, scrollPane, null);
-        DefaultListModel<SignalChartPanel> chartModel = new DefaultListModel<SignalChartPanel>();
-        listOfCharts = new JList<SignalChartPanel>(chartModel); //new JList();
+        DefaultListModel<SignalChartPanel> chartModel = new DefaultListModel<>();
+        listOfCharts = new JList<>(chartModel); //new JList();
         scrollPane.setViewportView(listOfCharts);
         listOfCharts.setCellRenderer(new ChartCellRenderer());
 
