@@ -1,5 +1,6 @@
 package binp.nbi.tango.adc;
 
+import binp.nbi.tango.util.ZipBufferedReader;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
