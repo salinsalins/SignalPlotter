@@ -321,7 +321,7 @@ public class SignalPlotter extends WindowAdapter {
 
     public static List<String> readSignalList(String fileName) {
         //System.out.println("readSignalList " + fileName);
-        LinkedList<String> list = new LinkedList<String>();
+        LinkedList<String> list = new LinkedList<>();
         try {
             ZipBufferedReader zbr = new ZipBufferedReader(fileName);
             List<String> zipEntryList = zbr.readZipEntryList();
