@@ -31,9 +31,9 @@ public class SignalChartPanel extends ChartPanel {
      *
      */
     private static final long serialVersionUID = -3243572960865124971L;
-    public static final String version = "2.1";
+    public static final String VERSION = "2.1";
 
-    private static final Logger logger = Logger.getLogger(SignalChartPanel.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SignalChartPanel.class.getName());
 
     private double zeroStart = 0.0;
     private double zeroLength = 0.0;
@@ -49,7 +49,6 @@ public class SignalChartPanel extends ChartPanel {
 
     public SignalChartPanel(JFreeChart chart, boolean useBuffer) {
         super(chart, useBuffer);
-        // TODO Auto-generated constructor stub
     }
 
     public SignalChartPanel() {
@@ -269,7 +268,7 @@ public class SignalChartPanel extends ChartPanel {
         return dataset.getSeries(seriesNumber);
     }
 
-    public List<?> getSeries() {
+    public List getSeries() {
         XYPlot plot = getChart().getXYPlot();
         XYSeriesCollection dataset = (XYSeriesCollection) plot.getDataset();
         return dataset.getSeries();
@@ -331,14 +330,14 @@ public class SignalChartPanel extends ChartPanel {
                             markN++;
                         }
                     } catch (NumberFormatException | NullPointerException e) {
-                        logger.log(Level.FINE, "Line can not be parsed ", e);
+                        LOGGER.log(Level.FINE, "Line can not be parsed ", e);
                     }
                 }
                 line = br.readLine();
             }
             br.close();
         } catch (IOException e) {
-            logger.log(Level.WARNING, "IO Exception ", e);
+            LOGGER.log(Level.WARNING, "IO Exception ", e);
         }
 
         if (zeroN > 0.0) {
@@ -368,29 +367,20 @@ public class SignalChartPanel extends ChartPanel {
             BufferedReader br = new BufferedReader(fr);
             readData(br);
             br.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("File " + fileName + " not found");
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            logger.log(Level.WARNING, "IO Exception ", e);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Data read error.");
+            LOGGER.log(Level.INFO, "Exception info", ex);
         }
     }
 
     public void readData(String zipFileName, String zipEntryName) {
-        try {
-            ZipBufferedReader zbr = new ZipBufferedReader(zipFileName);
+        try (ZipBufferedReader zbr = new ZipBufferedReader(zipFileName)) {
             if (zbr.findZipEntry(zipEntryName)) {
                 readData(zbr.getBufferedReader());
             }
-            zbr.close();
-        } catch (FileNotFoundException e) {
-            logger.log(Level.INFO, "File not found ", zipFileName);
-            //System.out.println("File " + zipFileName + " not found");
-            //e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            logger.log(Level.WARNING, "IO Exception ", e);
-            //e.printStackTrace();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Data read error.");
+            LOGGER.log(Level.INFO, "Exception info", ex);
         }
     }
 
@@ -437,8 +427,8 @@ public class SignalChartPanel extends ChartPanel {
             }
             br.close();
         } catch (IOException e) {
-            //e.printStackTrace();
-            logger.log(Level.WARNING, "IO Exception ", e);
+            LOGGER.log(Level.SEVERE, "Parameters read error.");
+            LOGGER.log(Level.INFO, "Exception info", e);
         }
     }
 
@@ -449,12 +439,10 @@ public class SignalChartPanel extends ChartPanel {
             readParameters(br);
             br.close();
         } catch (FileNotFoundException e) {
-            logger.log(Level.INFO, "File not found ", txtFileName);
-            //System.out.println("File " + txtFileName + " not found");
+            LOGGER.log(Level.INFO, "File {0} not found ", txtFileName);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            logger.log(Level.WARNING, "IO Exception ", e);
-            //e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Parameters read error.");
+            LOGGER.log(Level.INFO, "Exception info", e);
         }
     }
 
@@ -467,17 +455,15 @@ public class SignalChartPanel extends ChartPanel {
             }
             zbr.close();
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            logger.log(Level.INFO, "File not found ", zipFileName);
+            LOGGER.log(Level.INFO, "File {0} not found ", zipFileName);
             //System.out.println("File " + zipFileName + " not found");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            logger.log(Level.WARNING, "IO Exception ", e);
-            //e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Parameters read error.");
+            LOGGER.log(Level.INFO, "Exception info", e);
         }
     }
 
-    public void setChartParam() {
+    public final void setChartParam() {
         XYPlot plot = getChart().getXYPlot();
         // Stop refreshing the plot
         boolean savedNotify = plot.isNotify();
