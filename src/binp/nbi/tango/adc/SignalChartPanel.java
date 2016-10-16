@@ -330,14 +330,16 @@ public class SignalChartPanel extends ChartPanel {
                             markN++;
                         }
                     } catch (NumberFormatException | NullPointerException e) {
-                        LOGGER.log(Level.FINE, "Line can not be parsed ", e);
+                        LOGGER.log(Level.FINE, "Line can not be parsed");
+                        LOGGER.log(Level.FINER, "Exception info ", e);
                     }
                 }
                 line = br.readLine();
             }
             br.close();
         } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "IO Exception ", e);
+            LOGGER.log(Level.SEVERE, "IO Exception");
+            LOGGER.log(Level.INFO, "Exception info ", e);
         }
 
         if (zeroN > 0.0) {
