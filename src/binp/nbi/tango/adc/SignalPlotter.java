@@ -382,10 +382,6 @@ public class SignalPlotter extends WindowAdapter {
         oldEntryName = entryName;
     }
 
-    public void printf(String arg0, Object... arg1) {
-        System.out.printf(arg0, arg1);
-    }
-
     public void windowClosed(WindowEvent e) {
         saveConfig();
         //System.out.println("All windows gone.  Bye bye!");
