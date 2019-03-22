@@ -139,7 +139,7 @@ public class SignalPlotter extends WindowAdapter {
                         "Signal or archieve", "txt", "zip");
                 fileChooser.setFileFilter(filter);
                 fileChooser.setCurrentDirectory(new File(oldFolder));
-                int result = fileChooser.showDialog(null, "Открыть файл");
+                int result = fileChooser.showDialog(null, "Open signal or archieve");
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
                     textFieldFileName.setText(file.getPath());
@@ -267,8 +267,8 @@ public class SignalPlotter extends WindowAdapter {
                 }
                 chartPanel.setChartParam();
             }
-        } catch (Exception е) {
-            System.out.println("Исключение при десериализации : " + е);
+        } catch (Exception Рµ) {
+            System.out.println("Р�СЃРєР»СЋС‡РµРЅРёРµ РїСЂРё РґРµСЃРµСЂРёР°Р»РёР·Р°С†РёРё : " + Рµ);
         }
         //printf("%s\n", bounds.toString());
         //printf("%s\n", oldFolder);
@@ -290,8 +290,8 @@ public class SignalPlotter extends WindowAdapter {
             objOStrm.writeObject(bounds);
             objOStrm.writeObject(listOfNames.getSelectedIndex());
             objOStrm.close();
-        } catch (IOException е) {
-            System.out.println("Исключение при сериализации : " + е);
+        } catch (IOException ex) {
+            System.out.println("Exception : " + ex);
         }
     }
 

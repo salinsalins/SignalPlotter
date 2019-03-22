@@ -61,7 +61,7 @@ public class SignalChartPanel extends ChartPanel {
                 false, // tooltips
                 false // urls
         ), true);
-
+        
         // CUSTOMISATION OF THE CHART
         setPreferredSize(new Dimension(400, 300));
 
@@ -313,8 +313,10 @@ public class SignalChartPanel extends ChartPanel {
                 String[] xy = line.split(Constants.XY_DELIMETER);
                 if (xy.length > 1) {
                     try {
-                        double x = Double.parseDouble(xy[0]);
-                        double y = Double.parseDouble(xy[1]);
+                        //System.out.println("x="+xy[0]+" y="+xy[1]);
+                        double x = Double.parseDouble(xy[0].replace(",", "."));
+                        double y = Double.parseDouble(xy[1].replace(",", "."));
+                        //System.out.println("x="+x+" y="+y);
                         y = y * displayUnit;
                         series0.add(x, y);
                         if (zeroLength > 0.0 && x >= zeroStart
@@ -330,6 +332,7 @@ public class SignalChartPanel extends ChartPanel {
                             markN++;
                         }
                     } catch (NumberFormatException | NullPointerException e) {
+                        //System.out.println("Line can not be parsed");
                         LOGGER.log(Level.FINE, "Line can not be parsed");
                         LOGGER.log(Level.FINER, "Exception info ", e);
                     }
