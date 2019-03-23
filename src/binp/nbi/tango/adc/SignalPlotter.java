@@ -17,6 +17,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -41,8 +44,14 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class SignalPlotter extends WindowAdapter {
+    static {
+    	System.setProperty("java.util.logging.SimpleFormatter.format",
+                "[%1$tF %1$tT] %4$-7s %2$s %5$s %6$s %n");
+    }
+    
+	private static final Logger LOGGER = Logger.getLogger(SignalPlotter.class.getName());
 
-    public static final String version = "7.0";
+    public static final String version = "7.1";
 
     private String oldFolder = ".\\";
     private String oldFileName = "";
@@ -62,10 +71,16 @@ public class SignalPlotter extends WindowAdapter {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    SignalPlotter window = new SignalPlotter();
+                    //LOGGER.log(Level.FINE, "SignalPlotter " + version + " started");
+                	SignalPlotter window = new SignalPlotter();
                     window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                	//LOGGER.setLevel(Level.ALL);
+                	//Logger.getLogger("").setLevel(Level.FINE);
+                	//Logger.getLogger("").getHandlers()[0].setLevel(Level.FINE);
+                	LOGGER.log(Level.INFO, "SignalPlotter " + version + " started");
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, " run exceptoin");
+                    LOGGER.log(Level.INFO, "Exception info ", ex);
                 }
             }
         });
@@ -238,7 +253,16 @@ public class SignalPlotter extends WindowAdapter {
         listOfCharts.setCellRenderer(new ChartCellRenderer());
 
         tabbedPane.setSelectedIndex(0);
+    }
 
+    @Override
+    public void windowClosed(WindowEvent e) {
+        saveConfig();
+        System.exit(0);
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
         restoreConfig();
     }
 
@@ -252,9 +276,12 @@ public class SignalPlotter extends WindowAdapter {
             oldEntryName = (String) objIStrm.readObject();
             bounds = (Rectangle) objIStrm.readObject();
             index = (int) objIStrm.readObject();
-            frame.setBounds(bounds);
             objIStrm.close();
-
+            
+            // set bounds of main window
+            frame.setBounds(bounds);
+  
+            // open last signal
             if (!"".equals(oldFileName)) {
                 String fileName = oldFileName;
                 oldFileName = "";
@@ -267,21 +294,14 @@ public class SignalPlotter extends WindowAdapter {
                 }
                 chartPanel.setChartParam();
             }
-        } catch (Exception Рµ) {
-            System.out.println("Р�СЃРєР»СЋС‡РµРЅРёРµ РїСЂРё РґРµСЃРµСЂРёР°Р»РёР·Р°С†РёРё : " + Рµ);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Config resd error");
+            LOGGER.log(Level.INFO, "Exception info", ex);
         }
-        //printf("%s\n", bounds.toString());
-        //printf("%s\n", oldFolder);
-        //printf("%s\n", oldFileName);
-        //printf("%s\n", oldEntryName);
     }
 
     private void saveConfig() {
         Rectangle bounds = frame.getBounds();
-        //printf("%s\n", bounds.toString());
-        //printf("%s\n", oldFolder);
-        //printf("%s\n", oldFileName);
-        //printf("%s\n", oldEntryName);
         try {
             ObjectOutputStream objOStrm = new ObjectOutputStream(new FileOutputStream("config.dat"));
             objOStrm.writeObject(oldFolder);
@@ -306,7 +326,6 @@ public class SignalPlotter extends WindowAdapter {
             model.addElement(str);
         }
         listOfNames.setVisible(true);
-        oldFileName = fileName;
 
         DefaultListModel<SignalChartPanel> chartModel = (DefaultListModel<SignalChartPanel>) listOfCharts.getModel();
         chartModel.clear();
@@ -334,9 +353,9 @@ public class SignalPlotter extends WindowAdapter {
                 }
             }
             zbr.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, " exceptoin");
+            LOGGER.log(Level.INFO, "Exception info", ex);
         }
         return list;
     }
@@ -347,6 +366,7 @@ public class SignalPlotter extends WindowAdapter {
         }
         if (fileName.endsWith(".zip")) {
             readZipFileList(fileName);
+            oldFileName = fileName;
             return;
         }
 
@@ -380,12 +400,6 @@ public class SignalPlotter extends WindowAdapter {
 
         textArea_1.setCaretPosition(0);
         oldEntryName = entryName;
-    }
-
-    public void windowClosed(WindowEvent e) {
-        saveConfig();
-        //System.out.println("All windows gone.  Bye bye!");
-        System.exit(0);
     }
 }
 
