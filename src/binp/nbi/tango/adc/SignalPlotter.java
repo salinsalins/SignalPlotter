@@ -17,6 +17,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -44,12 +45,19 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class SignalPlotter extends WindowAdapter {
-    static {
+	// configure logging
+	static {
     	System.setProperty("java.util.logging.SimpleFormatter.format",
                 "[%1$tF %1$tT] %4$-7s %2$s %5$s %6$s %n");
     }
-    
-	private static final Logger LOGGER = Logger.getLogger(SignalPlotter.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SignalPlotter.class.getName());
+	private static final ConsoleHandler handler = new ConsoleHandler();
+	static {
+    	LOGGER.addHandler(handler);
+    	LOGGER.setUseParentHandlers(false);
+    	LOGGER.setLevel(Level.FINE);
+    	handler.setLevel(Level.FINE);
+    }
 
     public static final String version = "7.1";
 
@@ -74,10 +82,9 @@ public class SignalPlotter extends WindowAdapter {
                     //LOGGER.log(Level.FINE, "SignalPlotter " + version + " started");
                 	SignalPlotter window = new SignalPlotter();
                     window.frame.setVisible(true);
-                	//LOGGER.setLevel(Level.ALL);
                 	//Logger.getLogger("").setLevel(Level.FINE);
                 	//Logger.getLogger("").getHandlers()[0].setLevel(Level.FINE);
-                	LOGGER.log(Level.INFO, "SignalPlotter " + version + " started");
+                	LOGGER.log(Level.FINE, "SignalPlotter " + version + " started");
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, " run exceptoin");
                     LOGGER.log(Level.INFO, "Exception info ", ex);
